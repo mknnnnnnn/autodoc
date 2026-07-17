@@ -5,7 +5,7 @@ from config import DB_URL
 
 engine = create_engine(DB_URL)
 
-Session = sessionmaker(engine)
+Session = sessionmaker(engine, autoflush=False)
 
 
 class Base(DeclarativeBase):
