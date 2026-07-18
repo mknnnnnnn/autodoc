@@ -1,5 +1,6 @@
-from sqlalchemy import String, ForeignKey
+from sqlalchemy import String, ForeignKey, Date
 from sqlalchemy.orm import mapped_column, Mapped, relationship
+from datetime import date
 from ..database import Base
 
 
@@ -10,13 +11,17 @@ class Employee(Base):
     first_name: Mapped[str] = mapped_column(String, nullable=False)
     last_name: Mapped[str] = mapped_column(String, nullable=False, index=True)
 
-    address: Mapped["Address"] = relationship(back_populates="employee", uselist=False)
+    address: Mapped["Address"] = relationship(
+        back_populates="employee", uselist=False, cascade="all, delete-orphan"
+    )
 
     company_id: Mapped[int] = mapped_column(ForeignKey("companies.id"))
 
     company: Mapped["Company"] = relationship(back_populates="employees")
 
-    # Contract details
+    contracts: Mapped[list["Contract"]] = relationship(
+        back_populates="employee", cascade="all, delete-orphan"
+    )
 
 
 class Address(Base):
@@ -55,8 +60,22 @@ class Company(Base):
     zip_code: Mapped[str] = mapped_column(String, nullable=False)
     city: Mapped[str] = mapped_column(String, nullable=False)
 
-    employees: Mapped[list["Employee"]] = relationship(back_populates="company")
+    employees: Mapped[list["Employee"]] = relationship(
+        back_populates="company", cascade="all, delete-orphan"
+    )
 
 
 class Contract(Base):
-    pass
+    __tablename__ = "contracts"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+
+    job_title: Mapped[str] = mapped_column(String, nullable=False)
+    start_date: Mapped[date] = mapped_column(Date, nullable=False)
+    end_date: Mapped[date | None] = mapped_column(Date, nullable=True)
+    employment_type: Mapped[str] = mapped_column(String, nullable=False)
+    contract_type: Mapped[str] = mapped_column(String, nullable=False)
+
+    employee_id: Mapped[int] = mapped_column(ForeignKey("employees.id"))
+
+    employee: Mapped["Employee"] = relationship(back_populates="contracts")
