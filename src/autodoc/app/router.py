@@ -9,6 +9,7 @@ companies = APIRouter(prefix="/companies", tags=["companies"])
 
 # Company nedpoints
 
+
 @companies.post("/", response_model=CompanyResponse)
 def create_company(company: CreateCompany, db: Session = Depends(get_db)):
     return service.create_company(company, db)
