@@ -14,7 +14,7 @@ SRC = PATH / "src"
 sys.path.append(str(SRC))
 
 from autodoc.config import DB_URL
-from autodoc.employee import model
+from autodoc.app import model
 from autodoc.database import Base
 
 # this is the Alembic Config object, which provides
