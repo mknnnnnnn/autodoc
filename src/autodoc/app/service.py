@@ -1,4 +1,6 @@
+from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
+from sqlalchemy import select
 from .schema import CreateCompany, CreateEmployee, CreateAddress, CreateContract
 from .model import Company, Employee, Address, Contract
 
@@ -19,6 +21,19 @@ def create_company(company: CreateCompany, db: Session):
     db.refresh(db_company)
 
     return db_company
+
+
+def delete_company(vat_number: str, db: Session):
+    statement = select(Company).where(Company.vat_number == vat_number)
+    db_company = db.scalar(statement)
+
+    if db_company is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="COMPANY NOT FOUND"
+        )
+
+    db.delete(db_company)
+    db.commit()
 
 
 def create_employee(employee: CreateEmployee, db: Session):

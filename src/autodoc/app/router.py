@@ -29,6 +29,11 @@ def create_company(company: CreateCompany, db: Session = Depends(get_db)):
     return service.create_company(company, db)
 
 
+@companies.delete("/{vat_number}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_company(vat_number: str, db: Session = Depends(get_db)):
+    return service.delete_company(vat_number, db)
+
+
 # Employees endpoints
 
 
