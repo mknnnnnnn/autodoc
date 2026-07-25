@@ -30,8 +30,7 @@ class Address(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
 
     street: Mapped[str] = mapped_column(String, nullable=False)
-    house_number: Mapped[str] = mapped_column(String, nullable=False)
-    apartment_number: Mapped[str | None] = mapped_column(String, nullable=True)
+    street_number: Mapped[str] = mapped_column(String, nullable=False)
 
     zip_code: Mapped[str] = mapped_column(String, nullable=False, index=True)
     city: Mapped[str] = mapped_column(String, nullable=False, index=True)
@@ -54,8 +53,7 @@ class Company(Base):
     )
 
     street: Mapped[str] = mapped_column(String, nullable=False)
-    house_number: Mapped[str] = mapped_column(String, nullable=False)
-    apartment_number: Mapped[str | None] = mapped_column(String, nullable=True)
+    street_number: Mapped[str] = mapped_column(String, nullable=False)
 
     zip_code: Mapped[str] = mapped_column(String, nullable=False)
     city: Mapped[str] = mapped_column(String, nullable=False)
