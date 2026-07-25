@@ -7,11 +7,10 @@ from datetime import date
 class EmployeeBase(BaseModel):
     first_name: str
     last_name: str
-    company_id: int
 
 
 class CreateEmployee(EmployeeBase):
-    pass
+    company_id: int
 
 
 class UpdateEmployee(BaseModel):
@@ -25,23 +24,19 @@ class UpdateEmployee(BaseModel):
 
 class AddressBase(BaseModel):
     street: str
-    house_number: str
-    apartment_number: str | None = None
+    street_number: str
 
     zip_code: str
     city: str
 
-    employee_id: int
-
 
 class CreateAddress(AddressBase):
-    pass
+    employee_id: int
 
 
 class UpdateAddress(BaseModel):
     street: str | None = None
-    house_number: str | None = None
-    apartment_number: str | None = None
+    street_number: str | None = None
 
     zip_code: str | None = None
     city: str | None = None
@@ -49,6 +44,7 @@ class UpdateAddress(BaseModel):
 
 class AddressResponse(AddressBase):
     id: int
+    employee_id: int
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -61,8 +57,7 @@ class CompanyBase(BaseModel):
     vat_number: str
 
     street: str
-    house_number: str
-    apartment_number: str | None = None
+    street_number: str
 
     zip_code: str
     city: str
@@ -77,8 +72,7 @@ class UpdateCompany(BaseModel):
     vat_number: str | None = None
 
     street: str | None = None
-    house_number: str | None = None
-    apartment_number: str | None = None
+    street_number: str | None = None
 
     zip_code: str | None = None
     city: str | None = None
@@ -94,21 +88,17 @@ class CompanyResponse(CompanyBase):
 
 
 class ContractBase(BaseModel):
-    job_title: str
     start_date: date
     end_date: date | None = None
     employment_type: str
     contract_type: str
 
+
+class CreateContract(ContractBase):
     employee_id: int
 
 
-class CreateContract(ContractBase):
-    pass
-
-
 class UpdateContract(BaseModel):
-    job_title: str | None = None
     start_date: date | None = None
     end_date: date | None = None
     employment_type: str | None = None
@@ -117,6 +107,55 @@ class UpdateContract(BaseModel):
 
 class ContractResponse(ContractBase):
     id: int
+    employee_id: int
+    role: RoleResponse | None = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+# Role
+
+
+class RoleBase(BaseModel):
+    role_title: str
+
+
+class CreateRole(RoleBase):
+    contract_id: int
+
+
+class UpdateRole(BaseModel):
+    pass
+
+
+class RoleResponse(RoleBase):
+    id: int
+    contract_id: int
+    hazards: list[HazardResponse] = []
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+# Hazard
+
+
+class HazardBase(BaseModel):
+    hazard: str | None = None
+    risk_level: str | None = None
+    protective_measures: str | None = None
+
+
+class CreateHazard(HazardBase):
+    role_id: int
+
+
+class UpdateHazard(BaseModel):
+    pass
+
+
+class HazardResponse(HazardBase):
+    id: int
+    role_id: int
 
     model_config = ConfigDict(from_attributes=True)
 
