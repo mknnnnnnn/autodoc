@@ -1,6 +1,6 @@
 # AutoDoc
 
-Simple application for generating documents for employees.
+Simple application for generating documents for employees. Built with FastAPI, PostgreSQL and Docker. Currently under development.
 
 ## Tech Stack
 
