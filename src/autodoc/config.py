@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+from pathlib import Path
 import os
 
 load_dotenv()
@@ -14,3 +15,7 @@ DB_NAME = os.getenv("DB_NAME")
 DB_URL = (
     f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}" f"@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 )
+
+# Example document path
+
+TEMPLATES_PATH = Path(__file__).resolve().parents[2] / "templates"
