@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select, text
 
 from ..generator import generate_document
-from .schema import UpdateCompany, UpdateEmployee, UpdateAddress
+from .schema import UpdateCompany, UpdateEmployee, UpdateAddress, UpdateContract
 from .schema import CreateCompany, CreateEmployee, CreateAddress, CreateContract
 from .model import Company, Employee, Address, Contract
 
@@ -191,7 +191,13 @@ def delete_address(id: int, db: Session):
     db.commit()
 
 
-#
+# Contract
+
+
+def get_contacts(db: Session):
+    return db.scalars(select(Contract)).all()
+
+
 def create_contract(contract: CreateContract, db: Session):
 
     db_contract = Contract(
@@ -208,6 +214,39 @@ def create_contract(contract: CreateContract, db: Session):
     db.refresh(db_contract)
 
     return db_contract
+
+
+def update_contract(id: int, contract: UpdateContract, db: Session):
+    statement = select(Contract).where(Contract.id == id)
+    db_contract = db.scalar(statement)
+
+    if db_contract is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="CONTRACT NOT FOUND"
+        )
+
+    data_to_update = contract.model_dump(exclude_unset=True)
+
+    for field, data in data_to_update.items():
+        setattr(db_contract, field, data)
+
+    db.commit()
+    db.refresh(db_contract)
+
+    return db_contract
+
+
+def delete_contract(id: int, db: Session):
+    statement = select(Contract).where(Contract.id == id)
+    db_contract = db.scalar(statement)
+
+    if db_contract is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="CONTRACT NOT FOUND"
+        )
+
+    db.delete(db_contract)
+    db.commit()
 
 
 # Document
