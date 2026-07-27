@@ -35,6 +35,11 @@ def download_document(id: int, db: Session = Depends(get_db)):
 # Company endpoints
 
 
+@companies.get("/", response_model=list[CompanyResponse])
+def get_companies(db: Session = Depends(get_db)):
+    return service.get_companies(db)
+
+
 @companies.post(
     "/", response_model=CompanyResponse, status_code=status.HTTP_201_CREATED
 )
@@ -55,6 +60,11 @@ def delete_company(vat_number: str, db: Session = Depends(get_db)):
 
 
 # Employees endpoints
+
+
+@employees.get("/")
+def get_employees(db: Session = Depends(get_db)):
+    return service.get_emplooyes
 
 
 @employees.post(

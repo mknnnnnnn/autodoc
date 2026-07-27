@@ -3,9 +3,15 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select
 
 from ..generator import generate_document
-from .schema import UpdateCompany
+from .schema import UpdateCompany, UpdateEmployee
 from .schema import CreateCompany, CreateEmployee, CreateAddress, CreateContract
 from .model import Company, Employee, Address, Contract
+
+# Company
+
+
+def get_companies(db: Session):
+    return db.scalars(select(Company)).all()
 
 
 def create_company(company: CreateCompany, db: Session):
@@ -58,6 +64,11 @@ def delete_company(vat_number: str, db: Session):
     db.commit()
 
 
+# Employee
+def get_emplooyes(db: Session):
+    return db.scalars(select(Employee)).all()
+
+
 def create_employee(employee: CreateEmployee, db: Session):
 
     db_employee = Employee(
@@ -71,6 +82,37 @@ def create_employee(employee: CreateEmployee, db: Session):
     db.refresh(db_employee)
 
     return db_employee
+
+
+def update_employee(last_name: str, employee: UpdateEmployee, db: Session):
+    db_employee = db.scalar(select(Employee).where(Employee.last_name == last_name))
+
+    if db_employee is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="EMPLOYEE NOT FOUND"
+        )
+
+    data_to_update = employee.model_dump(exclude_unset=True)
+
+    for field, data in data_to_update.items():
+        setattr(db_employee, field, data)
+
+    db.commit()
+    db.refresh(db_employee)
+
+    return db_employee
+
+
+def delete_employee(last_name: str, db: Session):
+    db_employee = db.scalar(select(Employee).where(Employee.last_name == last_name))
+
+    if db_employee is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="USER NOT FOUND"
+        )
+
+    db.delete(db_employee)
+    db.commit()
 
 
 def create_address(address: CreateAddress, db: Session):
