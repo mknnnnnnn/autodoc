@@ -6,7 +6,7 @@ def generate_document(data: dict):
     input_path = TEMPLATES_PATH / "example.docx"
 
     if not input_path.exists():
-        raise FileExistsError(f"FILE DOES NOT EXISTS: {input_path}")
+        raise FileNotFoundError(f"FILE DOES NOT EXISTS: {input_path}")
 
     document = Document(input_path)
 
