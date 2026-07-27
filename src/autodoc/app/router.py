@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from ..database import get_db
 from .schema import (
     CompanyResponse,
+    UpdateCompany,
     CreateCompany,
     CreateEmployee,
     EmployeeResponse,
@@ -39,6 +40,13 @@ def download_document(id: int, db: Session = Depends(get_db)):
 )
 def create_company(company: CreateCompany, db: Session = Depends(get_db)):
     return service.create_company(company, db)
+
+
+@companies.patch("/{vat_number}", response_model=CompanyResponse)
+def update_company(
+    vat_number: str, company: UpdateCompany, db: Session = Depends(get_db)
+):
+    return service.update_company(vat_number, company, db)
 
 
 @companies.delete("/{vat_number}", status_code=status.HTTP_204_NO_CONTENT)

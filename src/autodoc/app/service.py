@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select
 
 from ..generator import generate_document
+from .schema import UpdateCompany
 from .schema import CreateCompany, CreateEmployee, CreateAddress, CreateContract
 from .model import Company, Employee, Address, Contract
 
@@ -18,6 +19,26 @@ def create_company(company: CreateCompany, db: Session):
         city=company.city,
     )
     db.add(db_company)
+    db.commit()
+    db.refresh(db_company)
+
+    return db_company
+
+
+def update_company(vat_number: str, company: UpdateCompany, db: Session):
+    statement = select(Company).where(Company.vat_number == vat_number)
+    db_company = db.scalar(statement)
+
+    if db_company is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="COMPANY NOT FOUND"
+        )
+
+    data_to_update = company.model_dump(exclude_unset=True)
+
+    for field, data in data_to_update.items():
+        setattr(db_company, field, data)
+
     db.commit()
     db.refresh(db_company)
 
