@@ -40,6 +40,13 @@ def get_companies(db: Session = Depends(get_db)):
     return service.get_companies(db)
 
 
+@companies.get("/{vat_number}/employee", response_model=EmployeeResponse)
+def get_employee_by_company(
+    last_name: str, vat_number: str, db: Session = Depends(get_db)
+):
+    return service.get_employee_by_company(last_name, vat_number, db)
+
+
 @companies.post(
     "/", response_model=CompanyResponse, status_code=status.HTTP_201_CREATED
 )

@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
-from sqlalchemy import select
+from sqlalchemy import select, text
 
 from ..generator import generate_document
 from .schema import UpdateCompany, UpdateEmployee
@@ -65,8 +65,21 @@ def delete_company(vat_number: str, db: Session):
 
 
 # Employee
+
+
 def get_emplooyes(db: Session):
     return db.scalars(select(Employee)).all()
+
+
+def get_employee_by_company(last_name: str, vat_number: str, db: Session):
+    statement = (
+        select(Employee)
+        .join(Company)
+        .where(Employee.last_name == last_name, Company.vat_number == vat_number)
+    )
+
+    db_employee = db.scalar(statement)
+    return db_employee
 
 
 def create_employee(employee: CreateEmployee, db: Session):
