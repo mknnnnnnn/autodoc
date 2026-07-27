@@ -74,7 +74,7 @@ def delete_company(vat_number: str, db: Session = Depends(get_db)):
 
 @employees.get("/")
 def get_employees(db: Session = Depends(get_db)):
-    return service.get_emplooyes(db)
+    return service.get_employees(db)
 
 
 @employees.get("/{last_name}/address", response_model=AddressResponse)
@@ -96,7 +96,7 @@ def update_employee(
     return service.update_employee(last_name, employee, db)
 
 
-@employees.delete("/{Last_name}", status_code=status.HTTP_204_NO_CONTENT)
+@employees.delete("/{last_name}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_employee(last_name: str, db: Session = Depends(get_db)):
     return service.delete_employee(last_name, db)
 
@@ -105,7 +105,7 @@ def delete_employee(last_name: str, db: Session = Depends(get_db)):
 
 
 @addresses.get("/", response_model=list[AddressResponse])
-def get_addresses(db: Session):
+def get_addresses(db: Session = Depends(get_db)):
     return service.get_addresses(db)
 
 
