@@ -12,6 +12,7 @@ from .schema import (
     UpdateEmployee,
     CreateAddress,
     AddressResponse,
+    UpdateAddress,
     CreateContract,
     ContractResponse,
 )
@@ -112,6 +113,16 @@ def get_addresses(db: Session):
 )
 def create_address(address: CreateAddress, db: Session = Depends(get_db)):
     return service.create_address(address, db)
+
+
+@addresses.patch("/{id}", response_model=AddressResponse)
+def update_address(id: int, address: UpdateAddress, db: Session = Depends(get_db)):
+    return service.update_address(id, address, db)
+
+
+@addresses.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_address(id: int, db: Session = Depends(get_db)):
+    return service.delete_address(id, db)
 
 
 # Contracts endpoints

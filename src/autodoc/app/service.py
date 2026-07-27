@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select, text
 
 from ..generator import generate_document
-from .schema import UpdateCompany, UpdateEmployee
+from .schema import UpdateCompany, UpdateEmployee, UpdateAddress
 from .schema import CreateCompany, CreateEmployee, CreateAddress, CreateContract
 from .model import Company, Employee, Address, Contract
 
@@ -158,6 +158,40 @@ def create_address(address: CreateAddress, db: Session):
     return db_address
 
 
+def update_address(id: int, address: UpdateAddress, db: Session):
+    statement = select(Address).where(Address.id == id)
+    db_address = db.scalar(statement)
+
+    if db_address is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="ADDRESS NOT FOUND"
+        )
+
+    data_to_update = address.model_dump(exclude_unset=True)
+
+    for field, data in data_to_update.items():
+        setattr(db_address, field, data)
+
+    db.commit()
+    db.refresh(db_address)
+
+    return db_address
+
+
+def delete_address(id: int, db: Session):
+    statement = select(Address).where(Address.id == id)
+    db_address = db.scalar(statement)
+
+    if db_address is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="ADDRESS NOT FOUND"
+        )
+
+    db.delete(db_address)
+    db.commit()
+
+
+#
 def create_contract(contract: CreateContract, db: Session):
 
     db_contract = Contract(
@@ -176,6 +210,7 @@ def create_contract(contract: CreateContract, db: Session):
     return db_contract
 
 
+# Document
 def create_employee_document(id: int, db: Session):
     statement = select(Employee).where(Employee.id == id)
     db_employee = db.scalar(statement)
