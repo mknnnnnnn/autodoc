@@ -13,8 +13,7 @@ def create_company(company: CreateCompany, db: Session):
         name=company.name,
         vat_number=company.vat_number,
         street=company.street,
-        house_number=company.house_number,
-        apartment_number=company.apartment_number,
+        street_number=company.street_number,
         zip_code=company.zip_code,
         city=company.city,
     )
