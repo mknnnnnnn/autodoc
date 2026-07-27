@@ -9,6 +9,7 @@ from .schema import (
     CreateCompany,
     CreateEmployee,
     EmployeeResponse,
+    UpdateEmployee,
     CreateAddress,
     AddressResponse,
     CreateContract,
@@ -79,6 +80,18 @@ def get_employees(db: Session = Depends(get_db)):
 )
 def create_employee(employee: CreateEmployee, db: Session = Depends(get_db)):
     return service.create_employee(employee, db)
+
+
+@employees.patch("/{last_name}", response_model=EmployeeResponse)
+def update_employee(
+    last_name: str, employee: UpdateEmployee, db: Session = Depends(get_db)
+):
+    return service.update_employee(last_name, employee, db)
+
+
+@employees.delete("/{Last_name}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_employe(last_name: str, db: Session = Depends(get_db)):
+    return service.delete_employee(last_name, db)
 
 
 # Addresses endpoints
