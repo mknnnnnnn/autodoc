@@ -41,6 +41,8 @@ class UpdateAddress(BaseModel):
     zip_code: str | None = None
     city: str | None = None
 
+    employee_id: int | None = None
+
 
 class AddressResponse(AddressBase):
     id: int
@@ -104,6 +106,8 @@ class UpdateContract(BaseModel):
     employment_type: str | None = None
     contract_type: str | None = None
 
+    employee_id: int | None = None
+
 
 class ContractResponse(ContractBase):
     id: int
@@ -125,7 +129,7 @@ class CreateRole(RoleBase):
 
 
 class UpdateRole(BaseModel):
-    pass
+    role_title: str
 
 
 class RoleResponse(RoleBase):
@@ -150,7 +154,9 @@ class CreateHazard(HazardBase):
 
 
 class UpdateHazard(BaseModel):
-    pass
+    hazard: str | None = None
+    risk_level: str | None = None
+    protective_measures: str | None = None
 
 
 class HazardResponse(HazardBase):
