@@ -128,6 +128,18 @@ def delete_employee(last_name: str, db: Session):
     db.commit()
 
 
+# Address
+def get_addresses(db: Session):
+    return db.scalars(select(Address)).all()
+
+
+def get_address_by_employee(last_name: str, db: Session):
+    statement = select(Address).join(Employee).where(Employee.last_name == last_name)
+    db_address = db.scalar(statement)
+
+    return db_address
+
+
 def create_address(address: CreateAddress, db: Session):
 
     db_address = Address(

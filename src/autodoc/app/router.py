@@ -75,6 +75,11 @@ def get_employees(db: Session = Depends(get_db)):
     return service.get_emplooyes
 
 
+@employees.get("/{last_name}/address", response_model=AddressResponse)
+def get_address_by_employee(last_name: str, db: Session = Depends(get_db)):
+    return service.get_address_by_employee(last_name, db)
+
+
 @employees.post(
     "/", response_model=EmployeeResponse, status_code=status.HTTP_201_CREATED
 )
@@ -95,6 +100,11 @@ def delete_employe(last_name: str, db: Session = Depends(get_db)):
 
 
 # Addresses endpoints
+
+
+@addresses.get("/", response_model=list[AddressResponse])
+def get_addresses(db: Session):
+    return service.get_addresses
 
 
 @addresses.post(
