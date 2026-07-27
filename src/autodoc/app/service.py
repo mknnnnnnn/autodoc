@@ -67,7 +67,7 @@ def delete_company(vat_number: str, db: Session):
 # Employee
 
 
-def get_emplooyes(db: Session):
+def get_employes(db: Session):
     return db.scalars(select(Employee)).all()
 
 
@@ -194,7 +194,7 @@ def delete_address(id: int, db: Session):
 # Contract
 
 
-def get_contacts(db: Session):
+def get_contracts(db: Session):
     return db.scalars(select(Contract)).all()
 
 
