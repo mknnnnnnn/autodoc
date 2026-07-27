@@ -67,7 +67,7 @@ def delete_company(vat_number: str, db: Session):
 # Employee
 
 
-def get_employes(db: Session):
+def get_employees(db: Session):
     return db.scalars(select(Employee)).all()
 
 
@@ -145,7 +145,6 @@ def create_address(address: CreateAddress, db: Session):
     db_address = Address(
         street=address.street,
         house_number=address.house_number,
-        apartment_number=address.apartment_number,
         zip_code=address.zip_code,
         city=address.city,
         employee_id=address.employee_id,
@@ -201,7 +200,6 @@ def get_contracts(db: Session):
 def create_contract(contract: CreateContract, db: Session):
 
     db_contract = Contract(
-        job_title=contract.job_title,
         start_date=contract.start_date,
         end_date=contract.end_date,
         employment_type=contract.employment_type,
