@@ -2,10 +2,9 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import select, text
 
-from ..generator import generate_document
-from .schema import UpdateCompany, UpdateEmployee, UpdateAddress, UpdateContract
-from .schema import CreateCompany, CreateEmployee, CreateAddress, CreateContract
-from .model import Company, Employee, Address, Contract
+from .schema import UpdateCompany, UpdateEmployee, UpdateAddress
+from .schema import CreateCompany, CreateEmployee, CreateAddress
+from .model import Company, Employee, Address
 
 # Company
 
@@ -129,6 +128,8 @@ def delete_employee(last_name: str, db: Session):
 
 
 # Address
+
+
 def get_addresses(db: Session):
     return db.scalars(select(Address)).all()
 
@@ -188,78 +189,3 @@ def delete_address(id: int, db: Session):
 
     db.delete(db_address)
     db.commit()
-
-
-# Contract
-
-
-def get_contracts(db: Session):
-    return db.scalars(select(Contract)).all()
-
-
-def create_contract(contract: CreateContract, db: Session):
-
-    db_contract = Contract(
-        start_date=contract.start_date,
-        end_date=contract.end_date,
-        employment_type=contract.employment_type,
-        contract_type=contract.contract_type,
-        employee_id=contract.employee_id,
-    )
-
-    db.add(db_contract)
-    db.commit()
-    db.refresh(db_contract)
-
-    return db_contract
-
-
-def update_contract(id: int, contract: UpdateContract, db: Session):
-    statement = select(Contract).where(Contract.id == id)
-    db_contract = db.scalar(statement)
-
-    if db_contract is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="CONTRACT NOT FOUND"
-        )
-
-    data_to_update = contract.model_dump(exclude_unset=True)
-
-    for field, data in data_to_update.items():
-        setattr(db_contract, field, data)
-
-    db.commit()
-    db.refresh(db_contract)
-
-    return db_contract
-
-
-def delete_contract(id: int, db: Session):
-    statement = select(Contract).where(Contract.id == id)
-    db_contract = db.scalar(statement)
-
-    if db_contract is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="CONTRACT NOT FOUND"
-        )
-
-    db.delete(db_contract)
-    db.commit()
-
-
-# Document
-def create_employee_document(id: int, db: Session):
-    statement = select(Employee).where(Employee.id == id)
-    db_employee = db.scalar(statement)
-
-    if db_employee is None:
-        raise HTTPException(status_code=404, detail="USER NOT FOUND")
-
-    data = {
-        "{first_name}": f"{db_employee.first_name}",
-        "{last_name}": f"{db_employee.last_name}",
-    }
-
-    output_doc_path = generate_document(data)
-
-    return output_doc_path

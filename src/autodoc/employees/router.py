@@ -13,27 +13,12 @@ from .schema import (
     CreateAddress,
     AddressResponse,
     UpdateAddress,
-    CreateContract,
-    ContractResponse,
-    UpdateContract,
 )
 from . import service
 
 companies = APIRouter(prefix="/companies", tags=["companies"])
 employees = APIRouter(prefix="/employees", tags=["employees"])
 addresses = APIRouter(prefix="/addresses", tags=["addresses"])
-contracts = APIRouter(prefix="/contracts", tags=["contracts"])
-documents = APIRouter(prefix="/documents", tags=["documents"])
-
-# Document endpoint
-
-
-@documents.get("/{id}")
-def download_document(id: int, db: Session = Depends(get_db)):
-    path_to_file = service.create_employee_document(id, db)
-
-    return FileResponse(path=path_to_file, filename=path_to_file.name)
-
 
 # Company endpoints
 
@@ -124,28 +109,3 @@ def update_address(id: int, address: UpdateAddress, db: Session = Depends(get_db
 @addresses.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_address(id: int, db: Session = Depends(get_db)):
     return service.delete_address(id, db)
-
-
-# Contracts endpoints
-
-
-@contracts.get("/", response_model=list[ContractResponse])
-def get_contacts(db: Session = Depends(get_db)):
-    return service.get_contracts(db)
-
-
-@contracts.post(
-    "/", response_model=ContractResponse, status_code=status.HTTP_201_CREATED
-)
-def create_contract(contract: CreateContract, db: Session = Depends(get_db)):
-    return service.create_contract(contract, db)
-
-
-@contracts.patch("/{id}", response_model=ContractResponse)
-def update_contract(id: int, contract: UpdateContract, db: Session = Depends(get_db)):
-    return service.update_contract(id, contract, db)
-
-
-@contracts.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_contract(id: int, db: Session = Depends(get_db)):
-    return service.delete_contract(id, db)

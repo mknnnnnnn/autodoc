@@ -1,0 +1,57 @@
+from datetime import date
+from pydantic import BaseModel, ConfigDict
+
+from ..safety.schema import HazardResponse
+
+# Contract
+
+
+class ContractBase(BaseModel):
+    start_date: date
+    end_date: date | None = None
+    employment_type: str
+    contract_type: str
+
+
+class CreateContract(ContractBase):
+    employee_id: int
+
+
+class UpdateContract(BaseModel):
+    start_date: date | None = None
+    end_date: date | None = None
+    employment_type: str | None = None
+    contract_type: str | None = None
+
+    employee_id: int | None = None
+
+
+class ContractResponse(ContractBase):
+    id: int
+    employee_id: int
+    role: RoleResponse | None = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+# Role
+
+
+class RoleBase(BaseModel):
+    role_title: str
+
+
+class CreateRole(RoleBase):
+    contract_id: int
+
+
+class UpdateRole(BaseModel):
+    role_title: str
+
+
+class RoleResponse(RoleBase):
+    id: int
+    contract_id: int
+    hazards: list[HazardResponse] = []
+
+    model_config = ConfigDict(from_attributes=True)
