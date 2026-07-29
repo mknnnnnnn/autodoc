@@ -1,8 +1,12 @@
+from typing import TYPE_CHECKING
+
 from sqlalchemy import String, ForeignKey
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 
 from ..database import Base
-from ..contracts.model import Contract
+
+if TYPE_CHECKING:
+    from ..contracts.model import Contract
 
 
 class Employee(Base):

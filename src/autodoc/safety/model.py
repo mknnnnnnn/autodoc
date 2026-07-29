@@ -1,8 +1,12 @@
-from sqlalchemy import String, Date, ForeignKey
+from typing import TYPE_CHECKING
+
+from sqlalchemy import String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..database import Base
-from ..contracts.model import Role
+
+if TYPE_CHECKING:
+    from ..contracts.model import Role
 
 
 class Hazard(Base):

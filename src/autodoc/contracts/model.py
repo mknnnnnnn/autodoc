@@ -1,11 +1,14 @@
 from datetime import date
+from typing import TYPE_CHECKING
 
 from sqlalchemy import String, Date, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..database import Base
-from ..employees.model import Employee
-from ..safety.model import Hazard
+
+if TYPE_CHECKING:
+    from ..employees.model import Employee
+    from ..safety.model import Hazard
 
 
 class Contract(Base):
