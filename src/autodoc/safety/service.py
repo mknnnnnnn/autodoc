@@ -6,6 +6,10 @@ from .model import Hazard
 from .schema import CreateHazard, UpdateHazard
 
 
+def get_hazards(db: Session):
+    return db.scalars(select(Hazard)).all()
+
+
 def create_hazard(hazard: CreateHazard, db: Session):
 
     db_hazard = Hazard(

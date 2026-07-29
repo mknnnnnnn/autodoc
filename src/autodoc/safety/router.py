@@ -8,6 +8,11 @@ from . import service
 hazards = APIRouter(prefix="/hazards", tags=["hazards"])
 
 
+@hazards.get("/", response_model=list[HazardResponse])
+def get_hazards(db: Session = Depends(get_db)):
+    return service.get_hazards(db)
+
+
 @hazards.post("/", response_model=HazardResponse, status_code=status.HTTP_201_CREATED)
 def create_hazard(hazard: CreateHazard, db: Session = Depends(get_db)):
     return service.create_hazard(hazard, db)
