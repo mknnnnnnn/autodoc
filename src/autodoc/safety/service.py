@@ -47,3 +47,18 @@ def update_hazard(id: int, hazard: UpdateHazard, db: Session):
         raise
 
     return db_hazard
+
+
+def delete_hazard(id: int, db: Session):
+    db_hazard = db.scalar(select(Hazard).where(Hazard.id == id))
+
+    if db_hazard is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="HAZARD NOT FOUND"
+        )
+
+    try:
+        db.delete(db_hazard)
+        db.commit()
+    except SQLAlchemyError:
+        db.rollback()
