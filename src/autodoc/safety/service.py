@@ -1,6 +1,9 @@
-from .schema import CreateHazard
-from .model import Hazard
+from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import select
+from .model import Hazard
+from .schema import CreateHazard, UpdateHazard
 
 
 def create_hazard(hazard: CreateHazard, db: Session):
@@ -12,8 +15,35 @@ def create_hazard(hazard: CreateHazard, db: Session):
         role_id=hazard.role_id,
     )
 
-    db.add(db_hazard)
-    db.commit()
-    db.refresh(db_hazard)
+    try:
+        db.add(db_hazard)
+        db.commit()
+        db.refresh(db_hazard)
+    except SQLAlchemyError:
+        db.rollback()
+        raise
+
+    return db_hazard
+
+
+def update_hazard(id: int, hazard: UpdateHazard, db: Session):
+    db_hazard = db.scalar(select(Hazard).where(Hazard.id == id))
+
+    if db_hazard is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="HAZARD NOT FOUND"
+        )
+
+    data = hazard.model_dump(exclude_unset=True)
+
+    for field, value in data.items():
+        setattr(db_hazard, field, value)
+
+    try:
+        db.commit()
+        db.refresh(db_hazard)
+    except SQLAlchemyError:
+        db.rollback()
+        raise
 
     return db_hazard
