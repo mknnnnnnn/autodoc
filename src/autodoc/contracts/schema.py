@@ -3,6 +3,29 @@ from pydantic import BaseModel, ConfigDict
 
 from ..safety.schema import HazardResponse
 
+# Role
+
+
+class RoleBase(BaseModel):
+    role_title: str
+
+
+class CreateRole(RoleBase):
+    contract_id: int
+
+
+class UpdateRole(BaseModel):
+    role_title: str
+
+
+class RoleResponse(RoleBase):
+    id: int
+    contract_id: int
+    hazards: list[HazardResponse] = []
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 # Contract
 
 
@@ -30,28 +53,5 @@ class ContractResponse(ContractBase):
     id: int
     employee_id: int
     role: RoleResponse | None = None
-
-    model_config = ConfigDict(from_attributes=True)
-
-
-# Role
-
-
-class RoleBase(BaseModel):
-    role_title: str
-
-
-class CreateRole(RoleBase):
-    contract_id: int
-
-
-class UpdateRole(BaseModel):
-    role_title: str
-
-
-class RoleResponse(RoleBase):
-    id: int
-    contract_id: int
-    hazards: list[HazardResponse] = []
 
     model_config = ConfigDict(from_attributes=True)
