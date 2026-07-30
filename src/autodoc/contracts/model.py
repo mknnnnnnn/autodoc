@@ -1,7 +1,7 @@
 from datetime import date
 from typing import TYPE_CHECKING
 
-from sqlalchemy import String, Date, ForeignKey
+from sqlalchemy import String, Date, ForeignKey, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..database import Base
@@ -29,6 +29,10 @@ class Contract(Base):
         back_populates="contract", cascade="all, delete-orphan", single_parent=True
     )
 
+    sanitaries: Mapped[list["Sanitary"]] = relationship(
+        back_populates="contract", cascade="all, delete-orphan"
+    )
+
 
 class Role(Base):
     __tablename__ = "roles"
@@ -40,3 +44,17 @@ class Role(Base):
     hazards: Mapped[list["Hazard"]] = relationship(
         back_populates="role", cascade="all, delete-orphan"
     )
+
+
+class Sanitary(Base):
+    __tablename__ = "sanitaries"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+
+    type: Mapped[str] = mapped_column(String, nullable=False)
+    start_date: Mapped[date] = mapped_column(Date, nullable=False)
+    end_date: Mapped[date] = mapped_column(Date, nullable=False)
+
+    contract_id: Mapped[int] = mapped_column(ForeignKey("contracts.id"), nullable=False)
+
+    contract: Mapped["Contract"] = relationship(back_populates="sanitaries")
