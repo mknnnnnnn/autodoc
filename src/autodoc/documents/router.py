@@ -1,5 +1,7 @@
+from urllib.parse import quote
+
 from fastapi import Depends, APIRouter
-from fastapi.responses import FileResponse
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 
 from ..database import get_db
@@ -10,6 +12,13 @@ documents = APIRouter(prefix="/documents", tags=["documents"])
 
 @documents.get("/{id}")
 def download_document(id: int, db: Session = Depends(get_db)):
-    path_to_file = service.create_employee_document(id, db)
+    document, filename = service.create_employee_document(id, db)
 
-    return FileResponse(path=path_to_file, filename=path_to_file.name)
+    return StreamingResponse(
+        document,
+        headers={
+            "Content-Disposition": f"attachment; filename*=UTF-8''{quote(filename)}"
+        },
+        media_type="application/vnd.openxmlformats-officedocument."
+        "wordprocessingml.document",
+    )

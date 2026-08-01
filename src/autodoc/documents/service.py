@@ -1,3 +1,5 @@
+from io import BytesIO
+
 from fastapi import HTTPException
 from docx import Document
 from sqlalchemy import select
@@ -20,10 +22,11 @@ def generate_document(data: dict):
             if old in paragraph.text:
                 paragraph.text = paragraph.text.replace(old, new)
 
-    output_path = TEMPLATES_PATH / "document.docx"
-    document.save(output_path)
+    buffer = BytesIO()
+    document.save(buffer)
+    buffer.seek(0)
 
-    return output_path
+    return buffer
 
 
 def create_employee_document(id: int, db: Session):
@@ -31,13 +34,14 @@ def create_employee_document(id: int, db: Session):
     db_employee = db.scalar(statement)
 
     if db_employee is None:
-        raise HTTPException(status_code=404, detail="USER NOT FOUND")
+        raise HTTPException(status_code=404, detail="Employee not found")
 
     data = {
         "{first_name}": f"{db_employee.first_name}",
         "{last_name}": f"{db_employee.last_name}",
     }
 
-    output_doc_path = generate_document(data)
+    document = generate_document(data)
+    filename = f"{db_employee.last_name}.docx"
 
-    return output_doc_path
+    return document, filename
