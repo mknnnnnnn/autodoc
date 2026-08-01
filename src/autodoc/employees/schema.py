@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from ..contracts.schema import ContractResponse
 
 # Company
@@ -6,12 +6,12 @@ from ..contracts.schema import ContractResponse
 
 class CompanyBase(BaseModel):
     name: str
-    vat_number: str
+    vat_number: str = Field(pattern=r"^\d{10}$")
 
     street: str
     street_number: str
 
-    zip_code: str
+    zip_code: str = Field(pattern=r"^\d{2}-\d{3}$")
     city: str
 
 
@@ -21,12 +21,12 @@ class CreateCompany(CompanyBase):
 
 class UpdateCompany(BaseModel):
     name: str | None = None
-    vat_number: str | None = None
+    vat_number: str | None = Field(default=None, pattern=r"^\d{10}$")
 
     street: str | None = None
     street_number: str | None = None
 
-    zip_code: str | None = None
+    zip_code: str | None = Field(default=None, pattern=r"^\d{2}-\d{3}$")
     city: str | None = None
 
 
@@ -61,7 +61,7 @@ class AddressBase(BaseModel):
     street: str
     street_number: str
 
-    zip_code: str
+    zip_code: str = Field(pattern=r"^\d{2}-\d{3}$")
     city: str
 
 
@@ -73,7 +73,7 @@ class UpdateAddress(BaseModel):
     street: str | None = None
     street_number: str | None = None
 
-    zip_code: str | None = None
+    zip_code: str | None = Field(default=None, pattern=r"^\d{2}-\d{3}$")
     city: str | None = None
 
     employee_id: int | None = None
@@ -94,6 +94,6 @@ class EmployeeResponse(EmployeeBase):
 
     address: AddressResponse | None = None
     company: CompanyResponse
-    contracts: list[ContractResponse] = []
+    contracts: list[ContractResponse] = Field(default_factory=list)
 
     model_config = ConfigDict(from_attributes=True)

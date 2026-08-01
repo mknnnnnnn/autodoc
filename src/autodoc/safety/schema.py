@@ -15,6 +15,7 @@ class UpdateHazard(BaseModel):
     hazard: str | None = None
     risk_level: str | None = None
     protective_measures: str | None = None
+    role_id = int | None = None
 
 
 class HazardResponse(HazardBase):

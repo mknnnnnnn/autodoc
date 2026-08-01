@@ -1,5 +1,5 @@
 from datetime import date
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 from ..safety.schema import HazardResponse
 
@@ -15,13 +15,14 @@ class CreateRole(RoleBase):
 
 
 class UpdateRole(BaseModel):
-    role_title: str
+    role_title: str | None = None
+    contract_id: str | None = None
 
 
 class RoleResponse(RoleBase):
     id: int
     contract_id: int
-    hazards: list[HazardResponse] = []
+    hazards: list[HazardResponse] = Field(default_factory=list)
 
     model_config = ConfigDict(from_attributes=True)
 
