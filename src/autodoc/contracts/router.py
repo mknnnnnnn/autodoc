@@ -25,7 +25,7 @@ def get_roles(db: Session = Depends(get_db)):
     return service.get_roles(db)
 
 
-@roles.post("", response_model=RoleResponse)
+@roles.post("", response_model=RoleResponse, status_code=status.HTTP_201_CREATED)
 def create_role(role: CreateRole, db: Session = Depends(get_db)):
     return service.create_role(role, db)
 

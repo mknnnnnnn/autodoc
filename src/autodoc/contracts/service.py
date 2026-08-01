@@ -50,7 +50,7 @@ def update_role(id: int, role: UpdateRole, db: Session):
     except IntegrityError:
         db.rollback()
         raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT, detail="Contract already exist"
+            status_code=status.HTTP_409_CONFLICT, detail="Contract does not exist"
         )
 
     return db_role
@@ -61,7 +61,7 @@ def delete_role(id: int, db: Session):
 
     if db_role is None:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Role not foind"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Role not found"
         )
 
     db.delete(db_role)

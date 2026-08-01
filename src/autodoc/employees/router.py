@@ -63,7 +63,7 @@ def get_employees(db: Session = Depends(get_db)):
 
 
 @employees.get("/{id}/address", response_model=AddressResponse)
-def get_address_by_employee(id: str, db: Session = Depends(get_db)):
+def get_address_by_employee(id: int, db: Session = Depends(get_db)):
     return service.get_address_by_employee(id, db)
 
 
@@ -75,12 +75,12 @@ def create_employee(employee: CreateEmployee, db: Session = Depends(get_db)):
 
 
 @employees.patch("/{id}", response_model=EmployeeResponse)
-def update_employee(id: str, employee: UpdateEmployee, db: Session = Depends(get_db)):
+def update_employee(id: int, employee: UpdateEmployee, db: Session = Depends(get_db)):
     return service.update_employee(id, employee, db)
 
 
 @employees.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_employee(id: str, db: Session = Depends(get_db)):
+def delete_employee(id: int, db: Session = Depends(get_db)):
     service.delete_employee(id, db)
 
 
