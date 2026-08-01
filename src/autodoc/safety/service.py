@@ -49,7 +49,7 @@ def update_hazard(id: int, hazard: UpdateHazard, db: Session):
     try:
         db.commit()
         db.refresh(db_hazard)
-    except SQLAlchemyError:
+    except IntegrityError:
         db.rollback()
         raise
 
@@ -67,6 +67,6 @@ def delete_hazard(id: int, db: Session):
     try:
         db.delete(db_hazard)
         db.commit()
-    except SQLAlchemyError:
+    except IntegrityError:
         db.rollback()
         raise
