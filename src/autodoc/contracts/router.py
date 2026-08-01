@@ -29,4 +29,4 @@ def update_contract(id: int, contract: UpdateContract, db: Session = Depends(get
 
 @contracts.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_contract(id: int, db: Session = Depends(get_db)):
-    return service.delete_contract(id, db)
+    service.delete_contract(id, db)

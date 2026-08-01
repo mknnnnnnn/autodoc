@@ -51,13 +51,13 @@ def update_company(
 
 @companies.delete("/{vat_number}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_company(vat_number: str, db: Session = Depends(get_db)):
-    return service.delete_company(vat_number, db)
+    service.delete_company(vat_number, db)
 
 
 # Employees endpoints
 
 
-@employees.get("/")
+@employees.get("/", response_model=list[EmployeeResponse])
 def get_employees(db: Session = Depends(get_db)):
     return service.get_employees(db)
 
@@ -83,7 +83,7 @@ def update_employee(
 
 @employees.delete("/{last_name}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_employee(last_name: str, db: Session = Depends(get_db)):
-    return service.delete_employee(last_name, db)
+    service.delete_employee(last_name, db)
 
 
 # Addresses endpoints
@@ -108,4 +108,4 @@ def update_address(id: int, address: UpdateAddress, db: Session = Depends(get_db
 
 @addresses.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_address(id: int, db: Session = Depends(get_db)):
-    return service.delete_address(id, db)
+    service.delete_address(id, db)

@@ -38,7 +38,7 @@ def update_hazard(id: int, hazard: UpdateHazard, db: Session):
             status_code=status.HTTP_404_NOT_FOUND, detail="HAZARD NOT FOUND"
         )
 
-    data = hazard.model_dump(exclude_unset=True)
+    data = hazard.model_dump(exclude_unset=True, exclude_none=True)
 
     for field, value in data.items():
         setattr(db_hazard, field, value)
@@ -66,3 +66,4 @@ def delete_hazard(id: int, db: Session):
         db.commit()
     except SQLAlchemyError:
         db.rollback()
+        raise

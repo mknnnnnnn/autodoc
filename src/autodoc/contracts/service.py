@@ -35,7 +35,7 @@ def update_contract(id: int, contract: UpdateContract, db: Session):
             status_code=status.HTTP_404_NOT_FOUND, detail="CONTRACT NOT FOUND"
         )
 
-    data_to_update = contract.model_dump(exclude_unset=True)
+    data_to_update = contract.model_dump(exclude_unset=True, exclude_none=True)
 
     for field, data in data_to_update.items():
         setattr(db_contract, field, data)

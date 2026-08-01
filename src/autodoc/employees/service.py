@@ -78,6 +78,12 @@ def get_employee_by_company(last_name: str, vat_number: str, db: Session):
     )
 
     db_employee = db.scalar(statement)
+
+    if db_employee is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="USER NOT FOUND"
+        )
+
     return db_employee
 
 
@@ -145,7 +151,7 @@ def create_address(address: CreateAddress, db: Session):
 
     db_address = Address(
         street=address.street,
-        house_number=address.house_number,
+        street_number=address.street_number,
         zip_code=address.zip_code,
         city=address.city,
         employee_id=address.employee_id,
@@ -167,7 +173,7 @@ def update_address(id: int, address: UpdateAddress, db: Session):
             status_code=status.HTTP_404_NOT_FOUND, detail="ADDRESS NOT FOUND"
         )
 
-    data_to_update = address.model_dump(exclude_unset=True)
+    data_to_update = address.model_dump(exclude_unset=True, exclude_none=True)
 
     for field, data in data_to_update.items():
         setattr(db_address, field, data)

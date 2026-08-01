@@ -25,4 +25,4 @@ def update_hazard(id: int, hazard: UpdateHazard, db: Session = Depends(get_db)):
 
 @hazards.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_hazard(id: int, db: Session = Depends(get_db)):
-    return service.delete_hazard(int, db)
+    service.delete_hazard(id, db)
