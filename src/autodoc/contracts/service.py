@@ -3,8 +3,82 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
-from .schema import CreateContract, UpdateContract, CreateRole, UpdateRole
-from .model import Contract, Role
+from .schema import (
+    CreateContract,
+    UpdateContract,
+    CreateRole,
+    UpdateRole,
+    CreateSanitary,
+    UpdateSanitary,
+)
+from .model import Contract, Role, Sanitary
+
+# Sanitary
+
+
+def get_sanitaries(db: Session):
+    return db.scalars(select(Sanitary)).all()
+
+
+def create_sanitary(sanitary: CreateSanitary, db: Session):
+
+    db_sanitary = Sanitary(
+        type=sanitary.type,
+        start_date=sanitary.start_date,
+        end_date=sanitary.end_date,
+        contract_id=sanitary.contract_id,
+    )
+
+    try:
+        db.add(db_sanitary)
+        db.commit()
+        db.refresh(db_sanitary)
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="Contract does not exist"
+        )
+
+    return db_sanitary
+
+
+def update_sanitary(id: int, sanitary: UpdateSanitary, db: Session):
+    statement = select(Sanitary).where(Sanitary.id == id)
+    db_sanitary = db.scalar(statement)
+
+    if db_sanitary is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Sanitary not found"
+        )
+
+    data = sanitary.model_dump(exclude_unset=True, exclude_none=True)
+
+    for field, value in data.items():
+        setattr(db_sanitary, field, value)
+
+    try:
+        db.commit()
+        db.refresh(db_sanitary)
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="Contract does not exist"
+        )
+
+    return db_sanitary
+
+
+def delete_sanitary(id: int, db: Session):
+    db_sanitary = db.get(Sanitary, id)
+
+    if db_sanitary is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Sanitary not found"
+        )
+
+    db.delete(db_sanitary)
+    db.commit()
+
 
 # Role
 

@@ -9,6 +9,9 @@ from .schema import (
     CreateRole,
     UpdateRole,
     RoleResponse,
+    CreateSanitary,
+    UpdateSanitary,
+    SanitaryResponse,
 )
 
 from . import service
@@ -16,6 +19,32 @@ from ..database import get_db
 
 contracts = APIRouter(prefix="/contracts", tags=["contracts"])
 roles = APIRouter(prefix="/roles", tags=["roles"])
+sanitaries = APIRouter(prefix="/sanitaries", tags=["sanitaries"])
+
+# Sanitary
+
+
+@sanitaries.get("", response_model=list[SanitaryResponse])
+def get_sanitaries(db: Session = Depends(get_db)):
+    return service.get_sanitaries(db)
+
+
+@sanitaries.post(
+    "", response_model=SanitaryResponse, status_code=status.HTTP_201_CREATED
+)
+def create_sanitary(sanitary: CreateSanitary, db: Session = Depends(get_db)):
+    return service.create_sanitary(sanitary, db)
+
+
+@sanitaries.patch("/{id}", response_model=SanitaryResponse)
+def update_sanitary(id: int, sanitary: UpdateSanitary, db: Session = Depends(get_db)):
+    return service.update_sanitary(id, sanitary, db)
+
+
+@sanitaries.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_sanitary(id: int, db: Session = Depends(get_db)):
+    service.delete_sanitary(id, db)
+
 
 # Role
 

@@ -3,6 +3,33 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from ..safety.schema import HazardResponse
 
+# Sanitary
+
+
+class BaseSanitary(BaseModel):
+    type: str
+    start_date: date
+    end_date: date
+
+
+class CreateSanitary(BaseSanitary):
+    contract_id: int
+
+
+class UpdateSanitary(BaseModel):
+    type: str | None = None
+    start_date: date | None = None
+    end_date: date | None = None
+    contract_id: int | None = None
+
+
+class SanitaryResponse(BaseSanitary):
+    id: int
+    contract_id: int
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 # Role
 
 
