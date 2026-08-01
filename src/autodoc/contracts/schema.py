@@ -16,7 +16,7 @@ class CreateRole(RoleBase):
 
 class UpdateRole(BaseModel):
     role_title: str | None = None
-    contract_id: str | None = None
+    contract_id: int | None = None
 
 
 class RoleResponse(RoleBase):
