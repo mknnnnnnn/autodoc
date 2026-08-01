@@ -27,7 +27,7 @@ def create_hazard(hazard: CreateHazard, db: Session):
     except IntegrityError:
         db.rollback()
         raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT, detail="HAZARD ALREADY EXISTS"
+            status_code=status.HTTP_409_CONFLICT, detail="ROLE DOES NOT EXIST"
         )
 
     return db_hazard

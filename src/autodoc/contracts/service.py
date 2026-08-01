@@ -1,6 +1,8 @@
 from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
+
 from .schema import CreateContract, UpdateContract
 from .model import Contract
 
@@ -19,9 +21,15 @@ def create_contract(contract: CreateContract, db: Session):
         employee_id=contract.employee_id,
     )
 
-    db.add(db_contract)
-    db.commit()
-    db.refresh(db_contract)
+    try:
+        db.add(db_contract)
+        db.commit()
+        db.refresh(db_contract)
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="EMPLOYEE DOES NOT EXIST"
+        )
 
     return db_contract
 
@@ -40,8 +48,14 @@ def update_contract(id: int, contract: UpdateContract, db: Session):
     for field, data in data_to_update.items():
         setattr(db_contract, field, data)
 
-    db.commit()
-    db.refresh(db_contract)
+    try:
+        db.commit()
+        db.refresh(db_contract)
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="EMPLOYEE DOEST NOT EXIST"
+        )
 
     return db_contract
 

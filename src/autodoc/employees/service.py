@@ -52,8 +52,14 @@ def update_company(vat_number: str, company: UpdateCompany, db: Session):
     for field, data in data_to_update.items():
         setattr(db_company, field, data)
 
-    db.commit()
-    db.refresh(db_company)
+    try:
+        db.commit()
+        db.refresh(db_company)
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="VAT NUMBER ALREADY EXISTS"
+        )
 
     return db_company
 
@@ -110,7 +116,7 @@ def create_employee(employee: CreateEmployee, db: Session):
     except IntegrityError:
         db.rollback()
         raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT, detail="EMPLOYEE ALREADY EXISTS"
+            status_code=status.HTTP_409_CONFLICT, detail="COMPANY DOES NOT EXIST"
         )
 
     return db_employee
@@ -129,8 +135,14 @@ def update_employee(last_name: str, employee: UpdateEmployee, db: Session):
     for field, data in data_to_update.items():
         setattr(db_employee, field, data)
 
-    db.commit()
-    db.refresh(db_employee)
+    try:
+        db.commit()
+        db.refresh(db_employee)
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="COMPANY DOES NOT EXIST"
+        )
 
     return db_employee
 
@@ -203,8 +215,14 @@ def update_address(id: int, address: UpdateAddress, db: Session):
     for field, data in data_to_update.items():
         setattr(db_address, field, data)
 
-    db.commit()
-    db.refresh(db_address)
+    try:
+        db.commit()
+        db.refresh(db_address)
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="EMPLOYEE DOES NOT EXIST"
+        )
 
     return db_address
 
