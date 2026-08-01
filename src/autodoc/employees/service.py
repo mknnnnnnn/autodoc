@@ -1,6 +1,7 @@
 from fastapi import HTTPException, status
+from sqlalchemy import select
 from sqlalchemy.orm import Session
-from sqlalchemy import select, text
+from sqlalchemy.exc import IntegrityError
 
 from .schema import UpdateCompany, UpdateEmployee, UpdateAddress
 from .schema import CreateCompany, CreateEmployee, CreateAddress
@@ -23,9 +24,16 @@ def create_company(company: CreateCompany, db: Session):
         zip_code=company.zip_code,
         city=company.city,
     )
-    db.add(db_company)
-    db.commit()
-    db.refresh(db_company)
+
+    try:
+        db.add(db_company)
+        db.commit()
+        db.refresh(db_company)
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="COMPANY ALREADY EXISTS"
+        )
 
     return db_company
 
@@ -39,7 +47,7 @@ def update_company(vat_number: str, company: UpdateCompany, db: Session):
             status_code=status.HTTP_404_NOT_FOUND, detail="COMPANY NOT FOUND"
         )
 
-    data_to_update = company.model_dump(exclude_unset=True)
+    data_to_update = company.model_dump(exclude_unset=True, exclude_none=True)
 
     for field, data in data_to_update.items():
         setattr(db_company, field, data)
@@ -95,9 +103,15 @@ def create_employee(employee: CreateEmployee, db: Session):
         company_id=employee.company_id,
     )
 
-    db.add(db_employee)
-    db.commit()
-    db.refresh(db_employee)
+    try:
+        db.add(db_employee)
+        db.commit()
+        db.refresh(db_employee)
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="EMPLOYEE ALREADY EXISTS"
+        )
 
     return db_employee
 
@@ -110,7 +124,7 @@ def update_employee(last_name: str, employee: UpdateEmployee, db: Session):
             status_code=status.HTTP_404_NOT_FOUND, detail="EMPLOYEE NOT FOUND"
         )
 
-    data_to_update = employee.model_dump(exclude_unset=True)
+    data_to_update = employee.model_dump(exclude_unset=True, exclude_none=True)
 
     for field, data in data_to_update.items():
         setattr(db_employee, field, data)
@@ -144,6 +158,11 @@ def get_address_by_employee(last_name: str, db: Session):
     statement = select(Address).join(Employee).where(Employee.last_name == last_name)
     db_address = db.scalar(statement)
 
+    if db_address is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="ADDRESS NOT FOUND"
+        )
+
     return db_address
 
 
@@ -157,9 +176,15 @@ def create_address(address: CreateAddress, db: Session):
         employee_id=address.employee_id,
     )
 
-    db.add(db_address)
-    db.commit()
-    db.refresh(db_address)
+    try:
+        db.add(db_address)
+        db.commit()
+        db.refresh(db_address)
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="ADDRESS ALREADY EXISTS"
+        )
 
     return db_address
 

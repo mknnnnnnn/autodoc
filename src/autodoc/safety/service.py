@@ -1,7 +1,8 @@
 from fastapi import HTTPException, status
-from sqlalchemy.orm import Session
-from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import select
+from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
+
 from .model import Hazard
 from .schema import CreateHazard, UpdateHazard
 
@@ -23,9 +24,11 @@ def create_hazard(hazard: CreateHazard, db: Session):
         db.add(db_hazard)
         db.commit()
         db.refresh(db_hazard)
-    except SQLAlchemyError:
+    except IntegrityError:
         db.rollback()
-        raise
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="HAZARD ALREADY EXISTS"
+        )
 
     return db_hazard
 
