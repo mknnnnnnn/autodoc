@@ -84,11 +84,11 @@ def get_employees(db: Session):
     return db.scalars(select(Employee)).all()
 
 
-def get_employee_by_company(last_name: str, vat_number: str, db: Session):
+def get_employee_by_company(id: int, vat_number: str, db: Session):
     statement = (
         select(Employee)
         .join(Company)
-        .where(Employee.last_name == last_name, Company.vat_number == vat_number)
+        .where(Employee.id == id, Company.vat_number == vat_number)
     )
 
     db_employee = db.scalar(statement)
@@ -122,8 +122,8 @@ def create_employee(employee: CreateEmployee, db: Session):
     return db_employee
 
 
-def update_employee(last_name: str, employee: UpdateEmployee, db: Session):
-    db_employee = db.scalar(select(Employee).where(Employee.last_name == last_name))
+def update_employee(id: int, employee: UpdateEmployee, db: Session):
+    db_employee = db.scalar(select(Employee).where(Employee.id == id))
 
     if db_employee is None:
         raise HTTPException(
@@ -147,8 +147,8 @@ def update_employee(last_name: str, employee: UpdateEmployee, db: Session):
     return db_employee
 
 
-def delete_employee(last_name: str, db: Session):
-    db_employee = db.scalar(select(Employee).where(Employee.last_name == last_name))
+def delete_employee(id: int, db: Session):
+    db_employee = db.scalar(select(Employee).where(Employee.id == id))
 
     if db_employee is None:
         raise HTTPException(

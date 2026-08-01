@@ -62,9 +62,9 @@ def get_employees(db: Session = Depends(get_db)):
     return service.get_employees(db)
 
 
-@employees.get("/{last_name}/address", response_model=AddressResponse)
-def get_address_by_employee(last_name: str, db: Session = Depends(get_db)):
-    return service.get_address_by_employee(last_name, db)
+@employees.get("/{id}/address", response_model=AddressResponse)
+def get_address_by_employee(id: str, db: Session = Depends(get_db)):
+    return service.get_address_by_employee(id, db)
 
 
 @employees.post(
@@ -74,16 +74,14 @@ def create_employee(employee: CreateEmployee, db: Session = Depends(get_db)):
     return service.create_employee(employee, db)
 
 
-@employees.patch("/{last_name}", response_model=EmployeeResponse)
-def update_employee(
-    last_name: str, employee: UpdateEmployee, db: Session = Depends(get_db)
-):
-    return service.update_employee(last_name, employee, db)
+@employees.patch("/{id}", response_model=EmployeeResponse)
+def update_employee(id: str, employee: UpdateEmployee, db: Session = Depends(get_db)):
+    return service.update_employee(id, employee, db)
 
 
-@employees.delete("/{last_name}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_employee(last_name: str, db: Session = Depends(get_db)):
-    service.delete_employee(last_name, db)
+@employees.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_employee(id: str, db: Session = Depends(get_db)):
+    service.delete_employee(id, db)
 
 
 # Addresses endpoints
