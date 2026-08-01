@@ -54,7 +54,7 @@ def update_contract(id: int, contract: UpdateContract, db: Session):
     except IntegrityError:
         db.rollback()
         raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT, detail="EMPLOYEE DOEST NOT EXIST"
+            status_code=status.HTTP_409_CONFLICT, detail="EMPLOYEE DOES NOT EXIST"
         )
 
     return db_contract
