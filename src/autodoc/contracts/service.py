@@ -3,8 +3,72 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
-from .schema import CreateContract, UpdateContract
-from .model import Contract
+from .schema import CreateContract, UpdateContract, CreateRole, UpdateRole
+from .model import Contract, Role
+
+# Role
+
+
+def get_roles(db: Session):
+    return db.scalars(select(Role)).all()
+
+
+def create_role(role: CreateRole, db: Session):
+
+    db_role = Role(role_title=role.role_title, contract_id=role.contract_id)
+
+    try:
+        db.add(db_role)
+        db.commit()
+        db.refresh(db_role)
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="Contract does not exist"
+        )
+
+    return db_role
+
+
+def update_role(id: int, role: UpdateRole, db: Session):
+    statement = select(Role).where(Role.id == id)
+    db_role = db.scalar(statement)
+
+    if db_role is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Role not found"
+        )
+
+    data = role.model_dump(exclude_unset=True, exclude_none=True)
+
+    for field, value in data.items():
+        setattr(db_role, field, value)
+
+    try:
+        db.commit()
+        db.refresh(db_role)
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="Contract already exist"
+        )
+
+    return db_role
+
+
+def delete_role(id: int, db: Session):
+    db_role = db.get(Role, id)
+
+    if db_role is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Role not foind"
+        )
+
+    db.delete(db_role)
+    db.commit()
+
+
+# Contract
 
 
 def get_contracts(db: Session):

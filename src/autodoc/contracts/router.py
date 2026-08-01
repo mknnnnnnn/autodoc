@@ -2,12 +2,45 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
-from .schema import CreateContract, UpdateContract, ContractResponse
+from .schema import (
+    CreateContract,
+    UpdateContract,
+    ContractResponse,
+    CreateRole,
+    UpdateRole,
+    RoleResponse,
+)
 
 from . import service
 from ..database import get_db
 
 contracts = APIRouter(prefix="/contracts", tags=["contracts"])
+roles = APIRouter(prefix="/roles", tags=["roles"])
+
+# Role
+
+
+@roles.get("", response_model=list[RoleResponse])
+def get_roles(db: Session = Depends(get_db)):
+    return service.get_roles(db)
+
+
+@roles.post("", response_model=RoleResponse)
+def create_role(role: CreateRole, db: Session = Depends(get_db)):
+    return service.create_role(role, db)
+
+
+@roles.patch("/{id}", response_model=RoleResponse)
+def update_role(id: int, role: UpdateRole, db: Session = Depends(get_db)):
+    return service.update_role(id, role, db)
+
+
+@roles.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_role(id: int, db: Session = Depends(get_db)):
+    service.delete_role(id, db)
+
+
+# Contract
 
 
 @contracts.get("/", response_model=list[ContractResponse])
