@@ -166,8 +166,8 @@ def get_addresses(db: Session):
     return db.scalars(select(Address)).all()
 
 
-def get_address_by_employee(last_name: str, db: Session):
-    statement = select(Address).join(Employee).where(Employee.last_name == last_name)
+def get_address_by_employee(id: int, db: Session):
+    statement = select(Address).join(Employee).where(Employee.id == id)
     db_address = db.scalar(statement)
 
     if db_address is None:
