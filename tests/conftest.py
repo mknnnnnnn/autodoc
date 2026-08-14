@@ -57,3 +57,16 @@ def company(client):
     assert response.status_code == 201
 
     return response.json()
+
+
+@pytest.fixture
+def employee(client, company):
+    company_id = company["id"]
+
+    employee = {"first_name": "X", "last_name": "Y", "company_id": company_id}
+
+    response = client.post("/employees", json=employee)
+
+    assert response.status_code == 201
+
+    return response.json()
