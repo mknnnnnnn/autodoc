@@ -39,3 +39,21 @@ def client(db_session):
         yield test_client
 
     app.dependency_overrides.clear()
+
+
+@pytest.fixture
+def company(client):
+    company = {
+        "name": "Firma X",
+        "vat_number": "0123456789",
+        "street": "Street",
+        "street_number": "Y",
+        "zip_code": "10-100",
+        "city": "Warsaw",
+    }
+
+    response = client.post("/companies", json=company)
+
+    assert response.status_code == 201
+
+    return response.json()
