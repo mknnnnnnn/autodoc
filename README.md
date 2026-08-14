@@ -1,5 +1,7 @@
 # AutoDoc
 
+[![Python Tests](https://github.com/mknnnnnnn/autodoc/actions/workflows/ci.yml/badge.svg)](https://github.com/mknnnnnnn/autodoc/actions/workflows/ci.yml)
+
 AutoDoc is a REST API for managing employee records and generating DOCX documents from templates. It is built with FastAPI, PostgreSQL and Docker.
 
 ## Features 
