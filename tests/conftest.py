@@ -11,7 +11,7 @@ from autodoc.main import app
 TEST_URL = "sqlite://"
 
 test_engine = create_engine(
-    TEST_URL, connect_args={"check_same_threads": False}, poolclass=StaticPool
+    TEST_URL, connect_args={"check_same_thread": False}, poolclass=StaticPool
 )
 
 TestSession = sessionmaker(bind=test_engine)
