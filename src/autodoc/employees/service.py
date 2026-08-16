@@ -1,11 +1,17 @@
 from fastapi import HTTPException, status
 from sqlalchemy import select
-from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
 
-from .schema import UpdateCompany, UpdateEmployee, UpdateAddress
-from .schema import CreateCompany, CreateEmployee, CreateAddress
-from .model import Company, Employee, Address
+from .model import Address, Company, Employee
+from .schema import (
+    CreateAddress,
+    CreateCompany,
+    CreateEmployee,
+    UpdateAddress,
+    UpdateCompany,
+    UpdateEmployee,
+)
 
 # Company
 

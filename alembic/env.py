@@ -1,12 +1,10 @@
+import sys
 from logging.config import fileConfig
+from pathlib import Path
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
+from sqlalchemy import engine_from_config, pool
 
 from alembic import context
-
-from pathlib import Path
-import sys
 
 PATH = Path(__file__).resolve().parents[1]
 SRC = PATH / "src"
@@ -14,9 +12,6 @@ SRC = PATH / "src"
 sys.path.append(str(SRC))
 
 from autodoc.config import DB_URL
-from autodoc.employees import model
-from autodoc.contracts import model
-from autodoc.safety import model
 from autodoc.database import Base
 
 # this is the Alembic Config object, which provides

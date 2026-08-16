@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from ..database import get_db
-from .schema import HazardResponse, CreateHazard, UpdateHazard
 from . import service
+from .schema import CreateHazard, HazardResponse, UpdateHazard
 
 hazards = APIRouter(prefix="/hazards", tags=["hazards"])
 

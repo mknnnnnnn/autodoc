@@ -1,17 +1,17 @@
 from fastapi import HTTPException, status
 from sqlalchemy import select
-from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
 
+from .model import Contract, Role, Sanitary
 from .schema import (
     CreateContract,
-    UpdateContract,
     CreateRole,
-    UpdateRole,
     CreateSanitary,
+    UpdateContract,
+    UpdateRole,
     UpdateSanitary,
 )
-from .model import Contract, Role, Sanitary
 
 # Sanitary
 

@@ -2,20 +2,19 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
-from .schema import (
-    CreateContract,
-    UpdateContract,
-    ContractResponse,
-    CreateRole,
-    UpdateRole,
-    RoleResponse,
-    CreateSanitary,
-    UpdateSanitary,
-    SanitaryResponse,
-)
-
-from . import service
 from ..database import get_db
+from . import service
+from .schema import (
+    ContractResponse,
+    CreateContract,
+    CreateRole,
+    CreateSanitary,
+    RoleResponse,
+    SanitaryResponse,
+    UpdateContract,
+    UpdateRole,
+    UpdateSanitary,
+)
 
 contracts = APIRouter(prefix="/contracts", tags=["contracts"])
 roles = APIRouter(prefix="/roles", tags=["roles"])

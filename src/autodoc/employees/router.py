@@ -1,20 +1,19 @@
 from fastapi import APIRouter, Depends, status
-from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 
 from ..database import get_db
+from . import service
 from .schema import (
+    AddressResponse,
     CompanyResponse,
-    UpdateCompany,
+    CreateAddress,
     CreateCompany,
     CreateEmployee,
     EmployeeResponse,
-    UpdateEmployee,
-    CreateAddress,
-    AddressResponse,
     UpdateAddress,
+    UpdateCompany,
+    UpdateEmployee,
 )
-from . import service
 
 companies = APIRouter(prefix="/companies", tags=["companies"])
 employees = APIRouter(prefix="/employees", tags=["employees"])

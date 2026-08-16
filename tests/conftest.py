@@ -1,11 +1,10 @@
 import pytest
-
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
-from autodoc.database import get_db, Base
+from autodoc.database import Base, get_db
 from autodoc.main import app
 
 TEST_URL = "sqlite://"

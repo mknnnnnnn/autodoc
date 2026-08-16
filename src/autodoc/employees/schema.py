@@ -1,4 +1,5 @@
 from pydantic import BaseModel, ConfigDict, Field
+
 from ..contracts.schema import ContractResponse
 
 # Company
