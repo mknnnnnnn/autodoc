@@ -24,9 +24,18 @@ jobs:
               uses: actions/setup-python@v6
               with:
                 python-version: "3.14"
-            - name: Install dependencies
-              run: pip install -r requirements.txt
 
-            - name: Run tests
-              run: pytest
+            - name: Install dependencies
+              run: |
+                pip install -r requirements.txt
+                pip install ruff pytest-cov
+
+            - name: Ruff format check
+              run: ruff format --check .
+
+            - name: Ruff lint check
+              run: ruff check . --ignore=B008
+
+            - name: Run tests with coverage
+              run: pytest --cov=src --cov-report=term-missing
 
