@@ -120,9 +120,20 @@ docker compose down -v
 
 The project includes automated tests written with `pytest`. 
 
-Tests are also automatically executed with GitHub Actions on every push and pull request.
+Tests, linting, formatting checks, and coverage are automatically executed with GitHub Actions on every push and pull request.
 
 Run tests locally with:
 ```bash
 pytest
+```
+
+Run tests with coverage:
+```bash
+pytest --cov=src --cov-report=term-missing
+```
+
+Check code quality:
+```bash
+ruff format --check .
+ruff check . --ignore=B008
 ```
